@@ -10,7 +10,7 @@ function setInitialStyles() {
 
     // body background
     document.body.style.background = `
-        linear-gradient(rgba(31, 31, 31, 0.3), rgba(31, 31, 31, 0.3)),
+        linear-gradient(rgba(31, 31, 31, 0.1), rgba(31, 31, 31, 0.1)),
         url('${base64Image}')`; // Replace with your base64 image or leave empty
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundRepeat = "no-repeat";
@@ -20,6 +20,55 @@ function setInitialStyles() {
     const messagePane = document.querySelector('#message-pane-layout-a11y');
     if (messagePane) {
         messagePane.parentNode.style.backgroundColor = "transparent";
+    }
+	
+    // message chat dividers
+	// Date in center screen
+    const dividerWrapper = document.querySelectorAll('.fui-Divider__wrapper');
+	dividerWrapper.forEach(wapper =>{
+		if (wapper) {
+			wapper.style.color = "black";
+		}
+	});
+	
+	// message chat timestamps
+    const timestampLabels = document.querySelectorAll('time[id^="timestamp-"]');
+	timestampLabels.forEach(timestampLabel =>{
+		if (timestampLabel) {
+			timestampLabel.style.color = "black";
+		}
+	});
+	
+	// message chat "important" labels
+    const importanceLabels = document.querySelectorAll('div[id^="importance-"]');
+	importanceLabels.forEach(importanceLabel =>{
+		if (importanceLabel) {
+			importanceLabel.style.color = "red";
+		}
+	});
+	
+	// message chat "important" labels
+    const importanceBadges = document.querySelectorAll('div[id^="important-badge-"]');
+	importanceBadges.forEach(importanceBadge =>{
+		if (importanceBadge) {
+			importanceBadge.style.color = "red";
+		}
+	});
+	
+	// message chat "message read" icon
+    const readStatusIcons = document.querySelectorAll('span[id^="read-status-icon-"]');
+	readStatusIcons.forEach(readStatusIcon =>{
+		if (readStatusIcon) {
+			readStatusIcon.style.color = "black";
+		}
+	});
+	
+	
+		
+    // chat list categories
+    const chatListCategories = document.querySelector(`div[class^="ui-tree"] span`);
+    if (chatListCategories) {
+        chatListCategories.style.color = "white";
     }
 
     // chat list main headline
@@ -67,8 +116,8 @@ function makeChatHeaderTransparent() {
     if (chatHeader) {
         chatHeader.parentNode.style.backgroundColor = "transparent";
         chatHeader.childNodes[0].childNodes[0].style.backgroundColor = "transparent";
-        chatHeader.parentNode.style.transition = "background-color 0.5s ease";
-        chatHeader.childNodes[0].childNodes[0].style.transition = "background-color 0.5s ease";
+        //chatHeader.parentNode.style.transition = "background-color 0.5s ease";
+        //chatHeader.childNodes[0].childNodes[0].style.transition = "background-color 0.5s ease";
 
         setTimeout(() => {
             // retry in case it was too fast
@@ -97,14 +146,8 @@ async function observeMutations() {
         }
 
         timeoutId = setTimeout(() => {
-            try{
-				setInitialStyles();
-			}
-			catch (err){
-				console.log("Couldnt set styles");
-				console.log(err.message);
-			}
-        }, 100); // Adjust the delay as needed, 100ms works well in most cases
+            setInitialStyles();
+        }, 50); // Adjust the delay as needed, 100ms works well in most cases
     };
 
     const observer = new MutationObserver(callback);
