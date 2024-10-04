@@ -45,30 +45,69 @@ async function injectScriptsFromFolder() {
 
     if (teamsPage) {
       console.log('Waiting for Teams page to stabilize...');
-      await teamsPage.waitForSelector('body', { timeout: 30000 });
+      await teamsPage.waitForSelector('body', { timeout: 3000 });
 
-      console.log('Injecting JavaScript from the "scripts" folder...');
+      // Retry injection if not successful initially
+      let injectionSuccessful = false;
+      let attempts = 0;
 
-      // Specify the directory containing JavaScript files
-      const scriptsDir = path.resolve(__dirname, 'scripts'); // Directory with JavaScript files
+      while (!injectionSuccessful && attempts < 5) {
+        attempts++;
 
-      // Read all JavaScript files from the directory
-      const files = fs.readdirSync(scriptsDir);
-      const jsFiles = files.filter(file => file.endsWith('.js'));
+        console.log('Injecting JavaScript from the "scripts" folder... (Attempt ' + attempts + ')');
 
-      for (const file of jsFiles) {
-        const filePath = path.join(scriptsDir, file);
-        const scriptContent = fs.readFileSync(filePath, 'utf-8');
+        // Specify the directory containing JavaScript plugin folders
+        const scriptsDir = path.resolve(__dirname, 'scripts'); // Directory with plugin subfolders
 
+        // Read all subfolders from the directory
+        const subfolders = fs.readdirSync(scriptsDir, { withFileTypes: true })
+          .filter(entry => entry.isDirectory())
+          .map(entry => entry.name);
+
+        for (const folder of subfolders) {
+          const mainJsPath = path.join(scriptsDir, folder, 'main.js');
+          
+          if (fs.existsSync(mainJsPath)) {
+            const scriptContent = fs.readFileSync(mainJsPath, 'utf-8');
+
+            try {
+              await teamsPage.evaluate(scriptContent);
+              console.log(`Injected script from: ${folder}/main.js`);
+            } catch (injectError) {
+              console.error(`Failed to inject script from ${folder}/main.js: ${injectError.message}`);
+            }
+          } else {
+            console.log(`No main.js found in: ${folder}, skipping...`);
+          }
+        }
+
+        // Inject static code to verify injection
         try {
-		  
-          await teamsPage.evaluate(scriptContent);
-          console.log(`Injected script from: ${file}`);
+          // Wait and verify if the marker element is present
+          const injected = await teamsPage.evaluate(() => {
+            // Replace "injected-foldername" with the correct marker ID pattern
+            return !!document.querySelector('[id^="injected-"]');
+          });
+
+          if (injected) {
+            console.log('Marker element found: Injection successful.');
+            injectionSuccessful = true;
+          } else {
+            console.log('Marker element not found, retrying...');
+          }
         } catch (injectError) {
-          console.error(`Failed to inject script from ${file}: ${injectError.message}`);
+          console.error(`Verification failed: ${injectError.message}`);
+        }
+
+        if (!injectionSuccessful) {
+          console.log('Retrying injection after delay...');
+          await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds before retry
         }
       }
 
+      if (!injectionSuccessful) {
+        console.error('Injection failed after multiple attempts.');
+      }
     } else {
       console.log('Teams page not found.');
     }
@@ -87,7 +126,7 @@ async function main() {
   // Give some time for Teams to launch and be ready for connection
   setTimeout(async () => {
     await injectScriptsFromFolder();
-  }, 15000); // 15-second delay to ensure Teams is fully loaded
+  }, 10000); // 15-second delay to ensure Teams is fully loaded
 }
 
 main();
