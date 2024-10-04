@@ -16,7 +16,7 @@ function killTeamsProcess() {
 
 // Function to launch Teams with remote debugging enabled
 function launchTeams() {
-  const teamsPath = `"C:\\Program Files\\WindowsApps\\MSTeams_24243.1309.3132.617_x64__8wekyb3d8bbwe\\ms-teams.exe" --remote-debugging-port=9222`;
+  const teamsPath = `"C:\\Program Files\\WindowsApps\\MSTeams_24243.1309.3132.617_x64__8wekyb3d8bbwe\\ms-teams.exe" msteams:work --remote-debugging-port=9222`;
 
   console.log('Launching Microsoft Teams with remote debugging...');
   
