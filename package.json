@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "child_process": "^1.0.2",
-    "puppeteer": "^23.5.0"
+    "ffi-napi": "^4.0.3",
+    "puppeteer": "^23.5.0",
+    "ref-napi": "^3.0.3"
   }
 }
