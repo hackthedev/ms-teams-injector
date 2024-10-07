@@ -14,5 +14,5 @@ It needs to look like this
 }
 
 You likely wont have ownership. In this case the following commands change that ;)
-takeown /F "C:\path\to\configuration.json"
-icacls "C:\path\to\configuration.json" /grant %username%:F
+takeown /F "C:\Program Files\WindowsApps\MSTeams_24243.1309.3132.617_x64__8wekyb3d8bbwe\configuration.json"
+icacls "C:\Program Files\WindowsApps\MSTeams_24243.1309.3132.617_x64__8wekyb3d8bbwe\configuration.json" /grant %username%:F
