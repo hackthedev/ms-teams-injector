@@ -134,8 +134,11 @@ function applyCSS(){
 			color: black !important;
 		}
 		
-		img[src*="bt_emoji_"] {
-			/* Your styles here */
+		div[id^="message-body-"] img,
+		div[id^="new-message-"] img		{
+			width: auto !important;
+			height: auto !important;
+			margin-top: 6px !important;
 		}
 
 			`;
@@ -152,4 +155,11 @@ function applyCSS(){
 	console.log("Applied CSS")
 }
 
-setInterval(applyCSS, 3000);
+
+document.addEventListener('click', function(event) {
+  // Check if the clicked element matches the selector
+  if (event.target.matches('div[id^="chat-list-item"]')) {
+    // Execute your code here
+    document.querySelectorAll(`[data-tid="ams-gif-control-button"]`).forEach(gif => { if(gif) gif.click() })
+  }
+});

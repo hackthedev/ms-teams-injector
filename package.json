@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "axios": "^1.7.7",
     "child_process": "^1.0.2",
     "ffi-napi": "^4.0.3",
     "puppeteer": "^23.5.0",
