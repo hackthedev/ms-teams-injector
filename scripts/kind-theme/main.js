@@ -30,7 +30,7 @@ function applyCSS(){
 		
 		:root {
 		  --colorNeutralForeground3: red; /* Change to your desired color */
-		  --plugin-font-color: white !important;
+		  --plugin-font-color: white;
 		}
 
 		/* Titlebar */
