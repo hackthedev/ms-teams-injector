@@ -7,6 +7,93 @@ const axios = require('axios');
 const ffi = require('ffi-napi');
 const ref = require('ref-napi');
 
+
+console.clear();
+
+
+// Function to get all JS files in a directory and its subdirectories
+function getAllJsFiles(directory) {
+  let jsFiles = [];
+
+  const files = fs.readdirSync(directory, { withFileTypes: true });
+  for (const file of files) {
+    const fullPath = path.join(directory, file.name);
+    if (file.isDirectory()) {
+      jsFiles = jsFiles.concat(getAllJsFiles(fullPath));
+    } else if (file.isFile() && file.name.endsWith('.js')) {
+      jsFiles.push(fullPath);
+    }
+  }
+
+  return jsFiles;
+}
+
+// Function to update JS files in the scripts folder and its subfolders
+function updateScriptFiles(base64String) {
+  if (!base64String) {
+    console.error('No base64 string provided.');
+    return;
+  }
+
+  const scriptsDir = path.resolve(__dirname, 'scripts');
+
+  // Get all JavaScript files in the scripts folder and its subfolders
+  const jsFiles = getAllJsFiles(scriptsDir);
+
+  jsFiles.forEach(filePath => {
+    let fileContent = fs.readFileSync(filePath, 'utf-8');
+
+    // Find and replace `const imageBase64Background = null;`
+    const searchPattern = /const imageBase64Background = null;/g;
+    if (searchPattern.test(fileContent)) {
+      fileContent = fileContent.replace(searchPattern, `const imageBase64Background = "${base64String}";`);
+      fs.writeFileSync(filePath, fileContent, 'utf-8');
+      console.log(`Updated ${filePath} with the new Base64 string.`);
+    }
+  });
+}
+
+
+// Function to convert image to base64
+function convertImageToBase64(filePath) {
+  try {
+    const imageBuffer = fs.readFileSync(filePath);
+    const base64String = imageBuffer.toString('base64');
+    return base64String;
+  } catch (error) {
+    console.error('Failed to read image file:', error);
+    return null;
+  }
+}
+
+// Function to save the base64 string into background.js
+function saveBase64ToJavaScriptFile(base64String) {
+  const jsContent = `data:image/png;base64,${base64String}`;
+
+  fs.writeFile('background.txt', jsContent, (err) => {
+    if (err) {
+      console.error('Failed to write to background.txt:', err);
+    } else {
+      console.log('Base64 string saved to background.js successfully.');
+    }
+  });
+}
+
+// Function to handle the "setImage" command
+async function setImage(filePath) {
+  
+
+  const base64String = convertImageToBase64(filePath);
+
+  if (base64String) {
+    saveBase64ToJavaScriptFile(base64String);
+  }
+}
+
+
+
+
+
 // Load kernel32.dll, user32.dll, and psapi.dll
 const kernel32 = ffi.Library('kernel32', {
   'OpenProcess': ['long', ['uint', 'bool', 'uint']],
@@ -66,8 +153,6 @@ function resizeWindow(processName) {
       const right = rect.readInt32LE(8);
       const bottom = rect.readInt32LE(12);
 
-      console.log(`Window Rect: left=${left}, top=${top}, right=${right}, bottom=${bottom}`);
-
       const currentWidth = right - left;
       const currentHeight = bottom - top;
       const newWidth = currentWidth + 1;
@@ -75,7 +160,7 @@ function resizeWindow(processName) {
       const setResult = user32.SetWindowPos(hwnd, 0, left, top, newWidth, currentHeight, SWP_NOZORDER | SWP_NOMOVE);
 
       if (setResult) {
-        console.log('Successfully resized the window by increasing the width by 1 pixel.');
+        //console.log('Successfully resized the window by increasing the width by 1 pixel.');
       } else {
         console.error('Failed to resize the window.');
       }
@@ -105,7 +190,7 @@ function killTeamsProcess() {
 function launchTeams() {
   const teamsPath = `"C:\\Program Files\\WindowsApps\\MSTeams_24243.1309.3132.617_x64__8wekyb3d8bbwe\\ms-teams.exe" --remote-debugging-port=9222`;
 
-  console.log('Launching Microsoft Teams with remote debugging...');
+  console.log('Launching Microsoft Teams...');
   
   exec(teamsPath, (error, stdout, stderr) => {
     if (error) {
@@ -193,7 +278,17 @@ async function main() {
   killTeamsProcess();
   launchTeams();
 
+	try{
+		// Run the function to update the scripts
+		updateScriptFiles(fs.readFileSync("background.txt", 'utf-8').trim());
+	}
+	catch(imgErr){
+		console.error("Couldnt set background image because it wasnt found");
+		console.error(imgErr.message);
+	}
+
   setTimeout(async () => {
+	
     await injectScriptsIntoAllPages();
   }, 10000); // Delay to ensure pages are fully loaded
 }
@@ -206,11 +301,21 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-// Listen for user input
+// inputs
 rl.on('line', (input) => {
-  if (input.trim() === 'reinject') {
+  const trimmedInput = input.trim();
+  
+  if (trimmedInput.startsWith('reinject')) {
     console.log('Reinjecting scripts...');
-    injectScriptsIntoAllPages();
+    injectScriptsIntoAllPages(); // Assuming this function is defined elsewhere
+  } else if (trimmedInput.startsWith('setImage')) {
+    const filePath = trimmedInput.split(' ')[1]; // Get the file path after the "setImage" command
+    
+    if (filePath) {
+      setImage(filePath);
+    } else {
+      console.log('Please provide the file path. Usage: setImage <file-path>');
+    }
   } else {
     console.log(`Unknown command: ${input}`);
   }

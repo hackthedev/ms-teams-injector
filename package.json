@@ -3,6 +3,7 @@
     "axios": "^1.7.7",
     "child_process": "^1.0.2",
     "ffi-napi": "^4.0.3",
+    "inquirer": "^12.0.0",
     "puppeteer": "^23.5.0",
     "ref-napi": "^3.0.3"
   }
