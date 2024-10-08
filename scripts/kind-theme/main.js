@@ -22,7 +22,7 @@ function applyCSS(){
 		/* Your CSS rules here */
 		/* Body Background */
 		body {
-			background: linear-gradient(rgba(31, 31, 31, 0.1), rgba(31, 31, 31, 0.1)), url('${imageBase64Background}'); /* Replace with your base64 image or leave empty */
+			background: linear-gradient(rgba(31, 31, 31, 0.2), rgba(31, 31, 31, 0.2)), url('${imageBase64Background}'); /* Replace with your base64 image or leave empty */
 			background-size: cover;
 			background-repeat: no-repeat;
 			background-attachment: fixed;
