@@ -50,3 +50,4 @@ Once the script launched etc you can type in the console window. You can enter `
 - [ ] Wrap GUI app around it with theme & plugin community "marketplace".
 - [ ] Edit config file automatically
 - [ ] Potentially inject into app.asar if its ever gonna get fixed
+- [ ] Update the example theme to fix styling in other pages like the calendar etc
