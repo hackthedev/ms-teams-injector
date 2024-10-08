@@ -29,3 +29,7 @@ I will further debug this and i will integrade it into the script.
 
 ## How to use
 Since its still kinda experimental you can run teams with `node inject.js`. It will relaunch teams if needed with the custom code.
+
+## How to set a custom picture?
+Once the script launched etc you can type in the console window. You can enter `setImage Path\To\Image.png` and it will load and transform the image to be later injected. If you path has spaces in it like `C:\Users\cool name\Desktop\anime.png` you will likely need to add `"` at the end and beginning of the path, so it looks like this:
+`setImage "C:\Users\cool name\Desktop\anime.png"`
