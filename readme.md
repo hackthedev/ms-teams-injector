@@ -36,7 +36,18 @@ I will further debug this and i will integrade it into the script.
 <br>
 
 ## How to use
-Since its still kinda experimental you can run teams with `node inject.js`. It will relaunch teams if needed with the custom code.
+### First Time Start
+```
+npm i
+node inject.js
+```
+
+<br>
+
+### Normally running it
+`node inject.js`
+
+This will change once i made a proper application for it
 
 <br>
 
