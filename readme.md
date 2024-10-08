@@ -1,5 +1,6 @@
 # MS Teams Mod
 With this you can create custom themes or plugins using javascript. One default theme is included.
+Its still somewhat experimental but i will try to improve the setup over time.
 ![image](https://github.com/user-attachments/assets/d0dfad9d-4ca8-441f-96a0-8d85b6136add)
 
 <br>
