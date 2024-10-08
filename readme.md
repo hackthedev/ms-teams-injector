@@ -63,3 +63,4 @@ Once the script launched etc you can type in the console window. You can enter `
 - [ ] Edit config file automatically
 - [ ] Potentially inject into app.asar if its ever gonna get fixed
 - [ ] Update the example theme to fix styling in other pages like the calendar etc
+- [ ] System to manage plugins & themes like enable, disable, install, uninstall etc
