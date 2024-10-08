@@ -1,3 +1,9 @@
+# MS Teams Mod
+With this you can create custom themes or plugins using javascript. One default theme is included.
+![image](https://github.com/user-attachments/assets/d0dfad9d-4ca8-441f-96a0-8d85b6136add)
+
+<br>
+
 ## How to install
 
 You likely need to edit the configuration.json file of teams to enabled debug mode.
