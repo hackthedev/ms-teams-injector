@@ -5,6 +5,11 @@ Its still somewhat experimental but i will try to improve the setup over time.
 
 <br>
 
+## Download Notice
+Please download the files from the releases instead of the repo, as the repo code itself is more like a "dev" version, and the files from the releases are more stable and finished up.
+
+<br>
+
 ## How to install
 
 You likely need to edit the configuration.json file of teams to enabled debug mode.
