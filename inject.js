@@ -44,7 +44,7 @@ function updateScriptFiles(base64String) {
     let fileContent = fs.readFileSync(filePath, 'utf-8');
 
     // Find and replace `const imageBase64Background = null;`
-    const searchPattern = /const imageBase64Background = null;/g;
+    const searchPattern = /const imageBase64Background = /g;
     if (searchPattern.test(fileContent)) {
       fileContent = fileContent.replace(searchPattern, `const imageBase64Background = "${base64String}";`);
       fs.writeFileSync(filePath, fileContent, 'utf-8');
@@ -306,8 +306,14 @@ rl.on('line', (input) => {
   const trimmedInput = input.trim();
   
   if (trimmedInput.startsWith('reinject')) {
+	// Run the function to update the scripts
+	console.log("Updating background");
+	updateScriptFiles(fs.readFileSync("background.txt", 'utf-8').trim());
     console.log('Reinjecting scripts...');
-    injectScriptsIntoAllPages(); // Assuming this function is defined elsewhere
+	
+	setTimeout(async () => {
+	  await injectScriptsIntoAllPages();
+	}, 2000); // Delay to ensure pages are fully loaded
   } else if (trimmedInput.startsWith('setImage')) {
     const filePath = trimmedInput.split(' ')[1]; // Get the file path after the "setImage" command
     
