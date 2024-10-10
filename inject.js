@@ -43,10 +43,16 @@ function updateScriptFiles(base64String) {
   jsFiles.forEach(filePath => {
     let fileContent = fs.readFileSync(filePath, 'utf-8');
 
-    // Find and replace `const imageBase64Background = null;`
-    const searchPattern = /const imageBase64Background = /g;
+    // Regex pattern to find the line where `const imageBase64Background` is defined
+    const searchPattern = /^.*const\s+imageBase64Background\s*=.*$/gm;
+
+    // If the line exists, remove it and replace with the new definition
     if (searchPattern.test(fileContent)) {
-      fileContent = fileContent.replace(searchPattern, `const imageBase64Background = "${base64String}";`);
+      // Replace the entire line with the new definition
+      const newDefinition = `const imageBase64Background = "${base64String}";`;
+      fileContent = fileContent.replace(searchPattern, newDefinition);
+
+      // Write the updated content back to the file
       fs.writeFileSync(filePath, fileContent, 'utf-8');
       console.log(`Updated ${filePath} with the new Base64 string.`);
     }
